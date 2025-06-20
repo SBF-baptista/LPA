@@ -33,4 +33,12 @@ public class TestResultService {
         test.setTimestamp(LocalDateTime.now());
         return testRepository.save(test);
     }
+
+    public TestResult createFromOutput(Device device, String firmwareType, String output) {
+        TestResult result = new TestResult();
+        result.setDevice(device);
+        result.setFirmwareType(firmwareType);
+        result.setFinalStatus(output.toLowerCase().contains("success") ? "SUCCESS" : "FAIL");
+        return save(result);
+    }
 }

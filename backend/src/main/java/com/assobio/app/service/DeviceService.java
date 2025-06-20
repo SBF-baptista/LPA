@@ -23,4 +23,22 @@ public class DeviceService {
     public Device save(Device device) {
         return repository.save(device);
     }
+
+    public Device findById(Long id) {
+        return repository.findById(id).orElse(null);
+    }
+
+    public Device findBySerial(String serial) {
+        return repository.findBySerialNumber(serial);
+    }
+
+    public Device findOrCreateBySerial(String serial) {
+        Device device = repository.findBySerialNumber(serial);
+        if (device == null) {
+            device = new Device();
+            device.setSerialNumber(serial);
+            device = repository.save(device);
+        }
+        return device;
+    }
 }

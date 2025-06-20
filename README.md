@@ -26,3 +26,8 @@ npm start
 ## Database Schema
 
 SQL for creating tables is in `backend/src/main/resources/schema.sql`. JPA will also generate tables automatically if the schema does not exist.
+
+### Endpoints
+
+- `POST /api/firmware/run` – run a firmware command on a device
+- `POST /api/images/upload` – upload an assembly image for a device
