@@ -4,7 +4,7 @@ This repository contains a starter project for running production tests on the A
 
 ## Backend
 
-Located in `backend/`. To run:
+Located in `backend/`. The project uses a small service layer for clean separation of responsibilities. To run with Maven:
 
 ```bash
 cd backend

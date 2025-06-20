@@ -1,39 +1,35 @@
 package com.assobio.app.controller;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import com.assobio.app.model.Device;
 import com.assobio.app.model.TestResult;
-import com.assobio.app.repository.DeviceRepository;
-import com.assobio.app.repository.TestResultRepository;
+import com.assobio.app.service.TestResultService;
 
 @RestController
 @RequestMapping("/api/tests")
 @CrossOrigin
 public class TestController {
 
-    @Autowired
-    private TestResultRepository testRepository;
+    private final TestResultService testService;
 
-    @Autowired
-    private DeviceRepository deviceRepository;
+    public TestController(TestResultService testService) {
+        this.testService = testService;
+    }
 
     @GetMapping
     public List<TestResult> list() {
-        return testRepository.findAll();
+        return testService.findAll();
     }
 
     @PostMapping
     public TestResult create(@RequestBody TestResult test) {
-        if (test.getDevice() != null && test.getDevice().getId() != null) {
-            Device device = deviceRepository.findById(test.getDevice().getId()).orElse(null);
-            test.setDevice(device);
-        }
-        test.setTimestamp(LocalDateTime.now());
-        return testRepository.save(test);
+        return testService.save(test);
     }
 }
