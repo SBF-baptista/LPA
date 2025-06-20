@@ -31,3 +31,4 @@ SQL for creating tables is in `backend/src/main/resources/schema.sql`. JPA will 
 
 - `POST /api/firmware/run` – run a firmware command on a device
 - `POST /api/images/upload` – upload an assembly image for a device
+- `GET /api/devices/{serial}/history` – list tests and images for a device

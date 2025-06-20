@@ -2,6 +2,8 @@ package com.assobio.app.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.springframework.stereotype.Service;
 
@@ -25,6 +27,10 @@ public class TestResultService {
         return testRepository.findAll();
     }
 
+    public List<TestResult> findByDeviceId(Long deviceId) {
+        return testRepository.findByDeviceId(deviceId);
+    }
+
     public TestResult save(TestResult test) {
         if (test.getDevice() != null && test.getDevice().getId() != null) {
             Device device = deviceRepository.findById(test.getDevice().getId()).orElse(null);
@@ -38,7 +44,33 @@ public class TestResultService {
         TestResult result = new TestResult();
         result.setDevice(device);
         result.setFirmwareType(firmwareType);
-        result.setFinalStatus(output.toLowerCase().contains("success") ? "SUCCESS" : "FAIL");
+        result.setWifiResult(parseFlag(output, "wifi"));
+        result.setBleResult(parseFlag(output, "ble"));
+        result.setAccelerometerResult(parseFlag(output, "accelerometer"));
+        result.setGnssResult(parseFlag(output, "gnss"));
+
+        boolean success = output.toLowerCase().contains("success");
+        if (Boolean.FALSE.equals(result.getWifiResult()) ||
+            Boolean.FALSE.equals(result.getBleResult()) ||
+            Boolean.FALSE.equals(result.getAccelerometerResult()) ||
+            Boolean.FALSE.equals(result.getGnssResult())) {
+            success = false;
+        }
+        result.setFinalStatus(success ? "SUCCESS" : "FAIL");
         return save(result);
+    }
+
+    private Boolean parseFlag(String output, String key) {
+        Pattern p = Pattern.compile(key + "\s*[:=]\s*(\w+)", Pattern.CASE_INSENSITIVE);
+        Matcher m = p.matcher(output);
+        if (m.find()) {
+            String val = m.group(1).toLowerCase();
+            if (val.matches("pass|ok|success")) {
+                return Boolean.TRUE;
+            } else if (val.matches("fail|error")) {
+                return Boolean.FALSE;
+            }
+        }
+        return null;
     }
 }

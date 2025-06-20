@@ -25,6 +25,10 @@ public class AssemblyImageService {
         return imageRepository.findAll();
     }
 
+    public List<AssemblyImage> findByDeviceId(Long deviceId) {
+        return imageRepository.findByDeviceId(deviceId);
+    }
+
     public AssemblyImage save(AssemblyImage image) {
         if (image.getDevice() != null && image.getDevice().getId() != null) {
             Device device = deviceRepository.findById(image.getDevice().getId()).orElse(null);
